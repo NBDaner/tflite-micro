@@ -1,4 +1,4 @@
-/* Copyright 2022 The TensorFlow Authors. All Rights Reserved.
+/* Copyright 2023 The TensorFlow Authors. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ uint8_t benchmark_runner_buffer[sizeof(PersonDetectionBenchmarkRunner)];
 
 // Initialize benchmark runner instance explicitly to avoid global init order
 // issues on Sparkfun. Use new since static variables within a method
-// are automatically surrounded by locking, which breaks bluepill and stm32f4.
+// are automatically surrounded by locking, which breaks bluepill.
 PersonDetectionBenchmarkRunner* CreateBenchmarkRunner(MicroProfiler* profiler) {
   // We allocate PersonDetectionOpResolver from a global buffer
   // because the object's lifetime must exceed that of the
@@ -61,7 +61,7 @@ PersonDetectionBenchmarkRunner* CreateBenchmarkRunner(MicroProfiler* profiler) {
   op_resolver->AddConv2D(tflite::Register_CONV_2D_INT8REF());
   op_resolver->AddDepthwiseConv2D();
   op_resolver->AddSoftmax();
-  op_resolver->AddAveragePool2D();
+  op_resolver->AddAveragePool2D(tflite::Register_AVERAGE_POOL_2D_INT8());
   op_resolver->AddReshape();
   return new (benchmark_runner_buffer)
       PersonDetectionBenchmarkRunner(g_person_detect_model_data, op_resolver,
